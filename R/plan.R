@@ -37,53 +37,6 @@ dplan <- drake_plan(
                              peakGrp = peakGrp, peakGrpVis = peakGrpVis,
                              config.xcms)),
         features    = target(command = fillAndExtractFTb(pCorrspd)),
-        featureTb   = target(command = extractFeatureTb(features, config.xcms))
-        # featureDef  = target(command = )
+        featureTb   = target(command = extractFeatureTb(features, config.xcms)),
+        featureDef  = target(command = extractFeatureDf(features))
 )
-
-fillAndExtractFTb <- function(pCorrspd, fill = TRUE) {
-        features <- lapply(pCorrspd, function(xdata, fill) {
-                if (fill) {
-                        message("Filling NA")
-                        xdata <- fillChromPeaks(xdata)
-                }
-                
-                fDef  <- as.data.table(x = featureDefinitions(xdata),
-                                       keep.rownames = "featureID")
-                fTb   <- data.table(featureValues(xdata, 
-                                                      value = "into"),
-                                    keep.rownames = "featureID")
-                fSmry <- data.table(featureSummary(xdata, 
-                                                       group = xdata@phenoData@data$sampleGroup),
-                                    keep.rownames = "featureID")
-                return(list(
-                        definition = fDef,
-                        summary    = fSmry,
-                        table      = fTb
-                ))
-        }, fill = fill)
-        return(features)
-}
-
-extractFeatureTb <- function(features, config.xcms) {
-        mapply(FUN = function(mappingTb, peakTable) {
-                dt <- merge(x = mappingTb$MappingTb,
-                            y = melt(peakTable$table,
-                                     id.vars = "featureID",
-                                     variable.name = "fileName", 
-                                     value.name = "int")
-                )
-                setcolorder(dt, c("featureID", "fileName"))
-        }, mappingTb = config.xcms,
-        peakTable = features, 
-        SIMPLIFY  = FALSE
-        )
-}
-
-# source("./packages.R")
-
-# pDeteced    <- readd(pDeteced)
-# config.xcms <- readd(config.xcms)
-
-# pos <- signalAlignmentObiwarp(pDeteced[1], config.xcms[1])
-# neg <- signalAlignmentObiwarp(pDeteced[2], config.xcms[2])

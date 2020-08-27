@@ -27,19 +27,19 @@ optionList <- list(
 arguments <- optparse::parse_args(optparse::OptionParser(option_list = optionList), 
                                   args = arguments)
 
-usethis::proj_set(normalizePath("."))
+usethis::proj_set(normalizePath("."), force = TRUE)
 usethis::proj_activate(normalizePath("."))
 arguments$input <- normalizePath(arguments$input)
 usethis::use_directory(arguments$output)
 
 if (arguments$unlock) {
         drake::drake_cache("./.drake/")$unlock()
-        message("The cache is unlocked.")
+        message("The cache has been unlocked.")
 }
 
 if (arguments$clean) {
         drake::clean()
-        message("The cache is removed.")
+        message("The cache has been removed.")
 }
 
 # Load packages. ----------------------------------------------------------
@@ -49,7 +49,7 @@ source(stringr::str_c(DRAKE_PIPELINE_PATH, "packages.R", sep = "/"))
 if (arguments$parallel > 1) {
         message("Set up parallel computing environment...")
         arguments$parallel <- min(arguments$parallel, future::availableCores())
-        message(sprintf("-  Using %d core/thread", arguments$parallel))
+        message(sprintf(" -  Using %d core/thread", arguments$parallel))
         
         
         # setting up future plan
