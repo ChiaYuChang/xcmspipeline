@@ -1,3 +1,4 @@
+#! DEPRECATED
 alignmentRstComparPlt <- function(obiwarp, peakGrp, file, ...) {
         phases <- names(obiwarp)
         alignment.p <- mapply(obiwarp, peakGrp, FUN = function(ow, pg) {

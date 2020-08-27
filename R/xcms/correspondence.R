@@ -1,3 +1,5 @@
+#' Select better alignment methods
+#' @param obiwarp object obiwarp
 correspondence <- function(obiwarp = NULL, obiwarpVis = NULL,
                            peakGrp = NULL, peakGrpVis = NULL,
                            config.xcms, 
