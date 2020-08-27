@@ -1,0 +1,58 @@
+FROM r-base
+
+LABEL maintainer="Chiayu Chang" 
+
+RUN apt-get update && apt-get install -y \
+    libssl-dev \
+    libxml2-dev \
+    libcurl4-openssl-dev \
+    libnetcdf-dev
+RUN apt-get clean
+
+# Imported functions
+RUN R -e "install.packages('optparse', dependencies = T, repos = 'http://cran.us.r-project.org')"
+RUN R -e "install.packages('usethis', dependencies = T, repos = 'http://cran.us.r-project.org')"
+
+# Package manager
+RUN R -e "install.packages('BiocManager', dependencies = T, repos = 'http://cran.us.r-project.org')"
+
+# Drake pipeline
+RUN R -e "install.packages('conflicted', dependencies = T, repos = 'http://cran.us.r-project.org')"
+RUN R -e "install.packages('dotenv', dependencies = T, repos = 'http://cran.us.r-project.org')"
+RUN R -e "install.packages('drake', dependencies = T, repos = 'http://cran.us.r-project.org')"
+
+# Data manipulation
+RUN R -e "install.packages('data.table', dependencies = T, repos = 'http://cran.us.r-project.org')"
+RUN R -e "install.packages('wrapr', dependencies = T, repos = 'http://cran.us.r-project.org')"
+RUN R -e "install.packages('stringr', dependencies = T, repos = 'http://cran.us.r-project.org')"
+# RUN R -e "install.packages('tidytable', dependencies = T, repos = 'http://cran.us.r-project.org')"
+
+# Figure drawing
+RUN R -e "install.packages('ggplot2', dependencies = T, repos = 'http://cran.us.r-project.org')"
+# RUN R -e "install.packages('ggthemes', dependencies = T, repos = 'http://cran.us.r-project.org')"
+
+# Files I/O
+RUN R -e "install.packages('rio', dependencies = T, repos = 'http://cran.us.r-project.org')"
+RUN R -e "install.packages('openxlsx', dependencies = T, repos = 'http://cran.us.r-project.org')"
+RUN R -e "install.packages('fst', dependencies = T, repos = 'http://cran.us.r-project.org')"
+RUN R -e "install.packages('readxl', dependencies = T, repos = 'http://cran.us.r-project.org')"
+
+# Parallel computing backend and tools
+RUN R -e "install.packages('future', dependencies = T, repos = 'http://cran.us.r-project.org')"
+RUN R -e "install.packages('future.apply', dependencies = T, repos = 'http://cran.us.r-project.org')"
+RUN R -e "BiocManager::install('BiocParallel')"
+RUN R -e "install.packages('remotes', dependencies = T, repos = 'http://cran.us.r-project.org')"
+RUN R -e "remotes::install_github('HenrikBengtsson/BiocParallel.FutureParam', ref='master')"
+# RUN R -e "install.packages('purrr', dependencies = T, repos = 'http://cran.us.r-project.org')"
+
+# MS data preprocessing
+RUN R -e "BiocManager::install('Autotuner')"
+RUN R -e "BiocManager::install('xcms')"
+
+
+RUN mkdir xcmspipeline
+RUN cd /xcmspipeline
+
+# ADD ~/Documents/drakepipeline/README.md /xcmspipeline
+
+# EXPOSE 8787

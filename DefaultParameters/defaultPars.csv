@@ -1,0 +1,23 @@
+parType,parName,parValue
+Parallel,parallel,TRUE
+Parallel,coreNum,2
+Path,mzXMLDir,./
+Path,mode,"NEG=NEG, POS=POS"
+ColumnMapping,sampleName,sampleName
+ColumnMapping,sampleGroup,sampleGroup
+ColumnMapping,sampleMode,sampleMode
+ColumnMapping,fileName,fileName
+ColumnMapping,injectionOrder,injectionOrder
+ColumnMapping,factorCol,all
+ColumnMapping,qcString,QC
+AutoTuner,autotune,TRUE
+AutoTuner,lag,auto
+AutoTuner,threshold,auto
+AutoTuner,influence,auto
+XCMS,ppm,auto
+XCMS,snthresh,auto
+XCMS,prefilterScan,auto
+XCMS,prefilterInt,auto
+XCMS,noise,auto
+XCMS,peakWidth,auto
+XCMS,bw,auto
