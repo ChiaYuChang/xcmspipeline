@@ -1,0 +1,9 @@
+"parameters",   parGrp,  max,   min, default
+"Max Peakwidth", "EIC", 30.0,   5.0,    20.0
+"Min Peakwidth", "EIC",  5.0,   1.0,     5.0
+"noise",         "EIC",  Inf, 100.0,   500.0
+"ppm",           "EIC", 10.0,   1.5,     5.0
+"preIntensity",  "EIC",  Inf,   0.0,   100.0
+"preScan",       "EIC",  6.0,   2.0,     3.0
+"snThresh",      "EIC",  8.0,   2.0,     4.0
+"bw",            "TIC", 10.0,   0.5,     5.0

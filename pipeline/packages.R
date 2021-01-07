@@ -9,8 +9,6 @@
 }
 is_pkg_installed <- .is_pkg_installed(rownames(installed.packages()))
 
-message(" -  Importing libraries...")
-
 if (!is_pkg_installed("optparse")) stop("Package optparse should be installed.")
 if (!is_pkg_installed("usethis"))  stop("Package usethis should be installed.")
 if (!is_pkg_installed("readxl"))   stop("Package usethis should be installed.")
@@ -26,7 +24,8 @@ suppressMessages(suppressPackageStartupMessages({
         # library(tidytable, quietly = T)  # dplyr liked
         library(wrapr, quietly = T)      # dot pipe (%.>%) and lambda
         library(stringr, quietly = T)    # string data manipulation                        
-
+        library(jsonlite, quietly = T)
+        
         # libraies for MS data preporcessing
         library(xcms, quietly = T)       # peaks detection, signals alignment, peaks grouping
         library(Autotuner, quietly = T)  # xcms parameters selection
