@@ -59,6 +59,7 @@ suppressMessages(suppressPackageStartupMessages({
 conflict_prefer("paste", "BiocGenerics")
 conflict_prefer("trimws", "MSnbase")
 conflict_prefer(":=", "data.table")
+conflict_prefer("smooth", "ProtGenerics") 
 
 # autoInstallDependentPkgs <- function() {
 #         message(" -  Checking dependency")

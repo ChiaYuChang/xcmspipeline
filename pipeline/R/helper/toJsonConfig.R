@@ -25,7 +25,7 @@ toJsonConfig <- function(config, configDir = ".", config.phase = NULL, config.xc
         flNm <- sprintf("%s/%s.json", configDir, "config")
 
         tryCatch({
-                cat(sprintf("%s/%s.%s -> %s/%s.json\n", configDir, nm, fmt, configDir, nm))
+                cat(sprintf("%s/%s.%s -> %s\n", configDir, nm, fmt, flNm))
                 write_json(x = jsonConfig, path = flNm, pretty = TRUE)
         }, error = function(err) {
                 warning(sprintf("Error in writting json file.\nThe original error message: '%s'", err))                

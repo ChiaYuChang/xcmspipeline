@@ -112,9 +112,13 @@ if (arguments$parallel > 1) {
 } else {
         message("     - Compute sequentially...")
         future::plan(sequential)
+        BiocParallel::register(BiocParallel::SerialParam())
+        BPPARAM <- bpparam()
 }
 
 message("> 5. Start drake pipeline...")
+n_job   <- ifelse(arguments$parallel > 1, yes = 6, no = 1)
+n_retry <- 3
 
 make(dplan,
      lock_envir = TRUE,
@@ -122,5 +126,6 @@ make(dplan,
      recover = FALSE,
      memory_strategy = "lookahead",
      garbage_collection = TRUE,
-     retries = 3,
-     jobs = 6)
+     retries = n_retry,
+     jobs = n_job
+)

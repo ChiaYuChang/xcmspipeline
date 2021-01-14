@@ -54,7 +54,13 @@ dplan <- drake_plan(
 
         # read all mzXML files
         mzData = target(command = readmzData(
-                       config.phase = config.phase, 
+                       config.phase = config.phase,
+                       mzRange = c(50, 900),
+                       cntrd = TRUE,
+                       smth = TRUE,
+                       smth.method = "SavitzkyGolay",
+                       smth.halfWindowSize = 4L,
+                       BPPARAM = BPPARAM,
                        is.drake = TRUE
                 ),
                 dynamic = map(
