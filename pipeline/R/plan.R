@@ -56,8 +56,8 @@ dplan <- drake_plan(
         mzData = target(command = readmzData(
                        config.phase = config.phase,
                        mzRange = c(50, 900),
-                       cntrd = TRUE,
-                       smth = TRUE,
+                       cntrd = arguments$centroid,
+                       smth = arguments$smooth,
                        smth.method = "SavitzkyGolay",
                        smth.halfWindowSize = 4L,
                        BPPARAM = BPPARAM,
@@ -119,7 +119,7 @@ dplan <- drake_plan(
                         config.xcms
                 ),
                 # hpc = FALSE
-                resources = list(cores = 3, gpus = 0)
+                resources = list(cores = min(arguments$parallel, 3), gpus = 0)
         ),
 
         peakGrp = target(command = signalAlignmentPeakGrp(
@@ -132,7 +132,7 @@ dplan <- drake_plan(
                         pDeteced,
                         config.xcms
                 ),
-                resources = list(cores = 10, gpus = 0)
+                resources = list(cores = min(arguments$parallel, 3), gpus = 0)
         ),
         
         obiwarpVis  = target(command = visualizingAlignmentRst(
@@ -159,12 +159,13 @@ dplan <- drake_plan(
         
         # # extract correspodence paeks
         pCorrspd = target(command = correspondence(
-                obiwarp = obiwarp,
-                obiwarpVis = obiwarpVis,
-                peakGrp = peakGrp,
-                peakGrpVis = peakGrpVis,
-                config.xcms = config.xcms,
-                is.drake = TRUE)
+                        obiwarp = obiwarp,
+                        obiwarpVis = obiwarpVis,
+                        peakGrp = peakGrp,
+                        peakGrpVis = peakGrpVis,
+                        config.xcms = config.xcms,
+                        is.drake = TRUE
+                )
         ),
 
         features  = target(command = fillAndExtractFTb(

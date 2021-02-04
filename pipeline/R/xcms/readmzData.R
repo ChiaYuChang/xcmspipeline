@@ -16,10 +16,11 @@ readmzData <- function(config.phase, mzRange = c(50, 900), cntrd = TRUE, smth = 
                              mode  = "onDisk",
                              verbose = FALSE,
                              msLevel. = 1)
-        mzData <- filterMz(mzData, mz = mzRange, msLevel. = 1)
+        mzData  <- filterMz(mzData, mz = mzRange, msLevel. = 1)
 
+        
         if (smth) {
-                mzData <- ProtGenerics::smooth(
+                mzData <- MSnbase::smooth(
                         x = mzData, 
                         method = smth.method,
                         halfWindow = smth.halfWindowSize,

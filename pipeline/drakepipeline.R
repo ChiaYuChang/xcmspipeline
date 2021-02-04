@@ -14,15 +14,20 @@ optionList <- list(
                 default = "Parameters", help = "the sheet contains parameters"),
         make_option(c("-p", "--parallel"), action = "store", type = "integer",
                 default = 2, help = "number of core to use for constructing drake graph"),
+        make_option(c("-m", "--smooth"), action = "store", type = "logical",
+                default = TRUE, help = "whether smooth the mzXML"),
+        make_option(c("-n", "--centroid"), action = "store", type = "logical",
+                default = TRUE, help = "whether smooth the mzXML"),
         make_option(c("-c", "--clean"), action = "store", type = "logical",
                 default = FALSE, help = "whether clean the cache"),
         make_option(c("-u", "--unlock"), action = "store", type = "logical",
                 default = FALSE, help = "whether unlock the cache")
 )
+
 arguments <- parse_args(
         OptionParser(
                 option_list = optionList
-        ), 
+        ),
         args = arguments
 )
 
@@ -32,7 +37,6 @@ usethis::proj_set(dirname(arguments$input), force = TRUE)
 usethis::proj_activate(dirname(arguments$input))
 arguments$input <- normalizePath(arguments$input)
 usethis::use_directory(stringr::str_remove(arguments$output, dirname(arguments$input)))
-
 
 message("> 0. Set up cache folder...")
 if (!dir.exists(arguments$output)) {
