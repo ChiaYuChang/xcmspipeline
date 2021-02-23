@@ -20,23 +20,71 @@ exportFeatures <- function(outputDir, featureTb, featureDef, config.phase, fmt =
                         dir.create(rstDir)
                 }
                 
-                featureTable <- sprintf("%s%s_featureTable.%s", rstDir, phase, fmt)
-                export(
-                        x = dcast.data.table(
-                                data = featureTb[[phase]], 
-                                formula = featureID ~ sampleGroup + sampleName, 
-                                value.var = "int",
-                                sep = "_"
-                        ),
-                        file = featureTable,
-                        format = fmt
-                )
                 
+                # Save feature table
+                featureTable <- sprintf("%s%s_featureTable.%s", rstDir, phase, fmt)
+                
+                e <- try({
+                        export(
+                                x = dcast.data.table(
+                                        data = featureTb[[phase]], 
+                                        formula = featureID ~ sampleGroup + sampleName, 
+                                        value.var = "int",
+                                        sep = "_"
+                                ),
+                                file = featureTable,
+                                format = fmt
+                        )
+                        unlink(featureTable)
+                })
+
+                dplyrInstalled <- all(c("dplyr", "tidyr") %chin% rownames(installed.packages()))
+                if (class(e) == "try-error" && dplyrInstalled) {
+                        warning("Try to dcast data by dplyr.")
+                        e <- try({
+                                export(
+                                        x = featureTb[[phase]] %>%
+                                        tidyr::unite(sampleFull,sampleGroup,sampleName,sep = "_") %>%
+                                        dplyr::select(featureID,sampleFull,int) %>%
+                                        spread(key = sampleFull, value = int),
+                                        file = featureTable,
+                                        format = fmt
+                                )
+
+                        })
+                        unlink(featureTable)
+                }
+
+
+                if (class(e) == "try-error") {
+                        warning("Faid to dcast data, export result as a .rds file.")
+                        featureTable <- sprintf("%s%s_featureTable.%s", rstDir, phase, "rds")
+                        saveRDS(
+                                object = featureTb[[phase]],
+                                file = featureTable
+                        )
+                }
+
+                # save feature definition
                 featureDefinition <- sprintf("%s%s_featureDefinition.%s", rstDir, phase, fmt)
-                export(x = featureDef[[phase]], 
-                       file = featureDefinition,
-                       format = fmt
-                )
+                
+                e <- try({
+                        export(
+                                x = featureDef[[phase]], 
+                                file = featureDefinition,
+                                format = fmt
+                        )
+                        unlink(featureDefinition)
+                })
+
+                if (class(e) == "try-error") {
+                        warning("Faid to dcast data, export result as a .rds file.")
+                        featureDefinition <- sprintf("%s%s_featureDefinition.%s", rstDir, phase, "rds")
+                        saveRDS(
+                                object = featureDef[[phase]],
+                                file = featureDefinition
+                        )
+                }
 
                 fileName[[phase]] <- list(
                         featureTable = featureTable,

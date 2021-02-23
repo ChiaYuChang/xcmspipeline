@@ -56,3 +56,5 @@ RUN chmod +x /pipeline/drakepipeline.R
 RUN ln -s /pipeline/drakepipeline.R /bin/drakepipeline
 RUN mkdir /project
 RUN cd /project
+
+# RUN R -e "pacman::p_install(package = c('dplyr', 'tidyr'))"

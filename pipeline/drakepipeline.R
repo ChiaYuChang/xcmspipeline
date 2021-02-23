@@ -38,7 +38,7 @@ usethis::proj_activate(dirname(arguments$input))
 arguments$input <- normalizePath(arguments$input)
 usethis::use_directory(stringr::str_remove(arguments$output, dirname(arguments$input)))
 
-message("> 0. Set up cache folder...")
+message("▶ 0. Set up cache folder...")
 if (!dir.exists(arguments$output)) {
         message(sprintf("%s is created", arguments$output))
         dir.create(arguments$output)
@@ -55,20 +55,20 @@ if (arguments$clean) {
 }
 
 # Load packages
-message("> 1. Loading packages...")
+message("▶ 1. Loading packages...")
 source(stringr::str_c(DRAKE_PIPELINE_PATH, "packages.R", sep = "/"))
 
 DFAULT_CONFIG_PATH    <- str_c(DRAKE_PIPELINE_PATH, "DefaultParameters/defaultConfig.xlsx", sep = "/")
 XCMS_PARS_BOUNDS_PATH <- str_c(DRAKE_PIPELINE_PATH, "DefaultParameters/xcmsParUbLb.csv", sep = "/")
 
 # Load functions
-message("> 2. Loading functions...")
+message("▶ 2. Loading functions...")
 for (srp in str_subset(list.files(str_c(DRAKE_PIPELINE_PATH, "R", sep = "/"), full.names = T, recursive = T), "\\.R$")) {
         source(srp)
 }
 
 # Checking the existence --------------------------------------------------
-message("> 3. Checking whether the file exist...")
+message("▶ 3. Checking whether the file exist...")
 if (!file.exists(arguments$input)) {
         stop(sprintf("File %s does not exist.", arguments$input))
 } else {
@@ -88,9 +88,11 @@ if (!file.exists(arguments$input)) {
                 rm(config)
         } else if (str_detect(arguments$input, "\\.json$")) {
                 #! DO SOMETHINGS
+                stop(".json will be support in the near future")
                 Nphase <- 2
         } else if (str_detect(arguments$input, "\\.xml$")) {
                 #! DO SOMETHINGS
+                stop(".xml will be support in the near future")
                 Nphase <- 2
         } else {
            stop("Unknown config format.")
@@ -99,16 +101,16 @@ if (!file.exists(arguments$input)) {
 }
 
 # Setting up parallel computing env
-message("> 4. Set up parallel computing environment...")
+message("▶ 4. Set up parallel computing environment...")
 if (arguments$parallel > 1) {
         arguments$parallel <- min(arguments$parallel, future::availableCores())
         message(sprintf("     - Using %d core/thread", arguments$parallel))
         # setting up future plan
-        message("     > 4.1 Setting BiocParallel...")
+        message("     ❯ 4.1 Setting BiocParallel...")
         BiocParallel::register(BiocParallel.FutureParam::FutureParam())
         BPPARAM <- bpparam()
-
-        message("     > 4.2 Setting future...")
+        
+        message("     ❯ 4.2 Setting future...")
         future::plan(list(tweak(multisession, workers = arguments$parallel),
                           tweak(multisession, workers = floor(arguments$parallel/Nphase)),
                           tweak(multisession, workers = floor(arguments$parallel/Nphase))))
@@ -120,7 +122,7 @@ if (arguments$parallel > 1) {
         BPPARAM <- bpparam()
 }
 
-message("> 5. Start drake pipeline...")
+message("▶ 5. Start drake pipeline...")
 n_job   <- ifelse(arguments$parallel > 1, yes = 6, no = 1)
 n_retry <- 3
 

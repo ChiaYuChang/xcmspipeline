@@ -18,6 +18,7 @@ newAutoTuner <- function(config.phase, sampleSize = "all", mzRange = c(50, 900),
                 if (sampleSize == "all") {
                         dt <- config.phase$MappingTb
                 } else {
+                        # select samples for xcms parameters estimation
                         sampleSize <- min(
                                 sampleSize, 
                                 config.phase$MappingTb[
@@ -50,12 +51,14 @@ newAutoTuner <- function(config.phase, sampleSize = "all", mzRange = c(50, 900),
                                         length(QC)
                                 ))
                         }
-                        
+                        message("Selected samples: ", selectedSmpl)
+
                         selectedSmpl <- c(QC, selectedSmpl)
                         
                         dt <- config.phase$MappingTb[sampleName %chin% selectedSmpl]
                 }
                 
+                # try to creat an autotuner object
                 tryCatch({
                         autotuner <- suppressMessages(createAutotuner(
                                 data_paths = str_c(config.phase$Path, dt$fileName, sep = "/"),

@@ -14,9 +14,11 @@ extractXCMSPars <- function(estXCMSPars, config, DEFAULT) {
                 ), 
                 use.names = TRUE
         )
-        estXCMSPars <- estXCMSPars[, 
-                .(value = quantile(value, .50, na.rm = TRUE)),
-                by = .(phase, parGrp, parameters)]
+        estXCMSPars <- estXCMSPars[, .(
+                        value = quantile(value, .50, na.rm = TRUE)
+                ),
+                by = .(phase, parGrp, parameters)
+        ]
         estXCMSPars <- merge(estXCMSPars, estXCMSParsFlags)
         estXCMSPars[parameters == "group_diff", parameters := "bw"]
         estXCMSPars <- merge(estXCMSPars, DEFAULT$xcms, by = c("parameters", "parGrp"), all.x = TRUE)
@@ -44,7 +46,7 @@ extractXCMSPars <- function(estXCMSPars, config, DEFAULT) {
                 for (par in names(config.xcms[[phase]])) {
                         if ( !is.na(config.xcms[[phase]][[par]]) && 
                            config.xcms[[phase]][[par]] > 0) {
-                               cat(sprintf("%15s\t%7.3f   (%7.3f)\n", 
+                               cat(sprintf("%15s\t%7.3f   (%10.3f)\n", 
                                         par, 
                                         config.xcms[[phase]][[par]], 
                                         estXCMSPars[[phase]][[par]]))  
@@ -52,7 +54,7 @@ extractXCMSPars <- function(estXCMSPars, config, DEFAULT) {
 
                         if( is.na(config.xcms[[phase]][[par]]) || 
                            config.xcms[[phase]][[par]] < 0) {
-                                cat(sprintf("%15s\t%7.3f -> %7.3f\n", 
+                                cat(sprintf("%15s\t%7.3f -> %10.3f\n", 
                                         par, 
                                         config.xcms[[phase]][[par]], 
                                         estXCMSPars[[phase]][[par]]))

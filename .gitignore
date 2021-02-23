@@ -5,5 +5,5 @@
 .drake/
 
 mzXML/
-*.xlsx
+/*.xlsx
 *.tar
