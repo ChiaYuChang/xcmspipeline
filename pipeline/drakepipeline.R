@@ -15,9 +15,9 @@ optionList <- list(
         make_option(c("-p", "--parallel"), action = "store", type = "integer",
                 default = 2, help = "number of core to use for constructing drake graph"),
         make_option(c("-m", "--smooth"), action = "store", type = "logical",
-                default = TRUE, help = "whether smooth the mzXML"),
+                default = FALSE, help = "whether smooth the mzXML"),
         make_option(c("-n", "--centroid"), action = "store", type = "logical",
-                default = TRUE, help = "whether smooth the mzXML"),
+                default = FALSE, help = "whether smooth the mzXML"),
         make_option(c("-c", "--clean"), action = "store", type = "logical",
                 default = FALSE, help = "whether clean the cache"),
         make_option(c("-u", "--unlock"), action = "store", type = "logical",
@@ -86,10 +86,10 @@ if (!file.exists(arguments$input)) {
                 config[, parType := na_locf(parType)]
                 Nphase <- nrow(config[parName == "phase"])
                 rm(config)
-        } else if (str_detect(arguments$input, ".json$")) {
+        } else if (str_detect(arguments$input, "\\.json$")) {
                 #! DO SOMETHINGS
                 Nphase <- 2
-        } else if (str_detect(arguments$input, ".xml$")) {
+        } else if (str_detect(arguments$input, "\\.xml$")) {
                 #! DO SOMETHINGS
                 Nphase <- 2
         } else {

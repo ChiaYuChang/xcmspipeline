@@ -107,8 +107,8 @@ autoTunerPipeLine <- function(autoTunersParSet, returned_peaks = 20,
         
         tryCatch({
                 signals <- lapply(getAutoIntensity(autotuner), 
-                          ThresholdingAlgo, 
-                          lag = lag, 
+                          ThresholdingAlgo,
+                          lag = lag,
                           threshold = threshold, 
                           influence = influence)
         

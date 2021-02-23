@@ -21,11 +21,15 @@ exportFeatures <- function(outputDir, featureTb, featureDef, config.phase, fmt =
                 }
                 
                 featureTable <- sprintf("%s%s_featureTable.%s", rstDir, phase, fmt)
-                export(x = dcast(data = featureTb[[phase]], 
-                                 formula = featureID ~ sampleGroup + sampleName, 
-                                 value.var = "int", sep = "_"),
-                       file = featureTable,
-                       format = fmt
+                export(
+                        x = dcast.data.table(
+                                data = featureTb[[phase]], 
+                                formula = featureID ~ sampleGroup + sampleName, 
+                                value.var = "int",
+                                sep = "_"
+                        ),
+                        file = featureTable,
+                        format = fmt
                 )
                 
                 featureDefinition <- sprintf("%s%s_featureDefinition.%s", rstDir, phase, fmt)
