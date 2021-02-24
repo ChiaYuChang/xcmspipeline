@@ -156,4 +156,3 @@ autoTunerPipeLine <- function(autoTunersParSet, returned_peaks = 20,
                 # parsEst$estimates <- NULL
         })
 }
-

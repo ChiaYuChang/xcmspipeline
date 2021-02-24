@@ -24,7 +24,9 @@ optionList <- list(
         make_option(c("-c", "--clean"), action = "store", type = "logical",
                 default = FALSE, help = "whether clean the cache"),
         make_option(c("-u", "--unlock"), action = "store", type = "logical",
-                default = FALSE, help = "whether unlock the cache")
+                default = FALSE, help = "whether unlock the cache"),
+        make_option(c("-w", "--warning"), action = "store", type = "logical",
+                default = FALSE, help = "whether show warnings after the pipeline is completed")
 )
 
 arguments <- parse_args(
@@ -141,6 +143,12 @@ make(dplan,
 
 timeEnd <- Sys.time()
 message(sprintf("Current time: %s", timeStr))
-message(round(timeEnd - timeStr, 3))
+message(sprintf("The pipeline took %3.5f min", round(timeEnd - timeStr, 3)))
 
-warnings()
+if (arguments$warning) {
+        cat(sprintf("%s warnings %s\n", 
+                str_c(rep("- ", 15), collapse = ""),
+                str_c(rep("- ", 15), collapse = "")))
+        warnings()
+        cat(sprintf("%s\n", str_c(rep("- ", 40), collapse = "")))
+}
