@@ -23,36 +23,50 @@ exportFeatures <- function(outputDir, featureTb, featureDef, config.phase, fmt =
                 
                 # Save feature table
                 featureTable <- sprintf("%s%s_featureTable.%s", rstDir, phase, fmt)
-                
+                featureTable.status <- 0
+                ftb <- NULL
+                message(sprintf("Export featureTable to %s", rstDir))
                 e <- try({
-                        export(
-                                x = dcast.data.table(
-                                        data = featureTb[[phase]], 
+                        ftb <- dcast.data.table(
+                                        data = featureTb[[phase]],
                                         formula = featureID ~ sampleGroup + sampleName, 
                                         value.var = "int",
                                         sep = "_"
-                                ),
-                                file = featureTable,
-                                format = fmt
                         )
-                        unlink(featureTable)
+                        fwrite(
+                                x = ftb,
+                                file = featureTable
+                        )
+                        0 # return 0 if the saving process is completed
+                        # export(
+                        #         x = ftb,
+                        #         file = featureTable,
+                        #         format = fmt
+                        # )
+                        # unlink(featureTable)
                 })
 
-                dplyrInstalled <- all(c("dplyr", "tidyr") %chin% rownames(installed.packages()))
                 if (class(e) == "try-error" && dplyrInstalled) {
+                        dplyrInstalled <- all(c("dplyr", "tidyr", "readr") %chin% rownames(installed.packages()))
                         warning("Try to dcast data by dplyr.")
                         e <- try({
-                                export(
-                                        x = featureTb[[phase]] %>%
+                                ftb <- featureTb[[phase]] %>%
                                         tidyr::unite(sampleFull,sampleGroup,sampleName,sep = "_") %>%
                                         dplyr::select(featureID,sampleFull,int) %>%
-                                        spread(key = sampleFull, value = int),
-                                        file = featureTable,
-                                        format = fmt
+                                        spread(key = sampleFull, value = int)
+                                readr::write_csv(
+                                        x = ftb,
+                                        path = featureTable
                                 )
-
+                                0 # return 0 if the saving process is completed
+                                # export(
+                                #         x = ftb,
+                                #         file = featureTable,
+                                #         format = fmt
+                                # )
+                                # unlink(featureTable)
                         })
-                        unlink(featureTable)
+                        featureTable.status <- 1
                 }
 
 
@@ -63,32 +77,51 @@ exportFeatures <- function(outputDir, featureTb, featureDef, config.phase, fmt =
                                 object = featureTb[[phase]],
                                 file = featureTable
                         )
+                        featureTable.status <- 2
                 }
 
                 # save feature definition
                 featureDefinition <- sprintf("%s%s_featureDefinition.%s", rstDir, phase, fmt)
-                
+                message(sprintf("Export featureDefinition to %s", rstDir))
+                featureDefinition.status <- 0
+                fdf <- NULL
                 e <- try({
-                        export(
-                                x = featureDef[[phase]], 
-                                file = featureDefinition,
-                                format = fmt
+                        fdf <- featureDef[[phase]]
+                        fwrite(
+                                x = fdf,
+                                file = featureDefinition
                         )
-                        unlink(featureDefinition)
+                        0 # return 0 if the saving process is completed
+                        # export(
+                        #         x = fdf, 
+                        #         file = featureDefinition,
+                        #         format = fmt
+                        # )
+                        # unlink(featureDefinition)
                 })
 
                 if (class(e) == "try-error") {
                         warning("Faid to dcast data, export result as a .rds file.")
                         featureDefinition <- sprintf("%s%s_featureDefinition.%s", rstDir, phase, "rds")
+                        fdf <- featureDef[[phase]]
                         saveRDS(
-                                object = featureDef[[phase]],
+                                object = fdf,
                                 file = featureDefinition
                         )
+                        featureDefinition.status <- 1
                 }
 
                 fileName[[phase]] <- list(
-                        featureTable = featureTable,
-                        featureDefinition = featureDefinition
+                        featureTable = list(
+                                dir    = featureTable,
+                                status = featureTable.status,
+                                data   = ftb
+                        ),
+                        featureDefinition = list(
+                                dir    = featureDefinition,
+                                status = featureDefinition.status,
+                                data   = featureDef[[phase]]
+                        )
                 )
         }
         return(fileName)

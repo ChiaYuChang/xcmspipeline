@@ -1,6 +1,9 @@
 #!/usr/bin/env Rscript
 options(future.globals.maxSize = 1024^2*2000)
 
+timeStr <- Sys.time()
+message(sprintf("Current time: %s", timeStr))
+
 DRAKE_PIPELINE_PATH = "/pipeline"
 arguments = commandArgs(trailingOnly = TRUE)
 suppressPackageStartupMessages(library("optparse"))
@@ -135,3 +138,9 @@ make(dplan,
      retries = n_retry,
      jobs = n_job
 )
+
+timeEnd <- Sys.time()
+message(sprintf("Current time: %s", timeStr))
+message(round(timeEnd - timeStr, 3))
+
+warnings()
