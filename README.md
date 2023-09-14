@@ -1,6 +1,6 @@
 # LC-MS data analysis pipeline
 
-此流程旨在自動化分析質譜儀（mass spectrometry）產生的代謝體（metabolomics）資料。流程主要包含兩個部分：首先，使用 AutoTuner [3] 自動選擇 xcms [1, 2] 套件所需的參數，然後使用xcms提取各個資料集中的代謝特徵（Features）。整個流程使用R語言中的drake [4] 套件來構建和管理，該套件具有易於執行和維護的優勢，並能夠自動平行處理不相關的步驟，以提高整體分析速度。在本流程中，我們選擇使用future作為平行運算的後端，儘管其初始化時間較長，但相對於R的其他平行處理方式，它更容易配置並且更適合放大。流程將每個階段的分析結果分別存儲在指定的資料夾中，使用命名分支路徑進行區分。每個階段的輸出資料包括 featureDef.csv，用於記錄特徵的詳細資訊，以及featureTable.csv，用於記錄每個特徵在每個樣本中的訊號強度（intensity）。
+此流程旨在自動化分析質譜儀（mass spectrometry）產生的代謝體（metabolomics）資料。流程主要包含兩個部分：首先，使用 AutoTuner [[3](https://doi.org/10.1021/acs.analchem.9b04804)] 自動選擇 xcms [[1](https://doi.org/10.1021/ac051437y), [2](https://doi.org/10.1186/1471-2105-9-504)] 套件所需的參數，然後使用xcms提取各個資料集中的代謝特徵（Features）。整個流程使用R語言中的drake [[4](https://doi.org/10.1186/1471-2105-9-504)] 套件來構建和管理，該套件具有易於執行和維護的優勢，並能夠自動平行處理不相關的步驟，以提高整體分析速度。在本流程中，我們選擇使用future作為平行運算的後端，儘管其初始化時間較長，但相對於R的其他平行處理方式，它更容易配置並且更適合放大。流程將每個階段的分析結果分別存儲在指定的資料夾中，使用命名分支路徑進行區分。每個階段的輸出資料包括 featureDef.csv，用於記錄特徵的詳細資訊，以及featureTable.csv，用於記錄每個特徵在每個樣本中的訊號強度（intensity）。
 
 ## 1. 安裝方法
 
@@ -71,10 +71,10 @@
 
 - `Path`: 與檔案路徑相關的變數
   - `mzXMLDir`: [`string`]: 存放 `.mzXML` 檔案的路徑
-- `AutoTuner`: 用於 `AutoTuner` 套件的參數 [1]
+- `AutoTuner`: 用於 `AutoTuner` 套件的參數 [[1](https://doi.org/10.1021/ac051437y)]
   - `autotune` [`bool`]: 是否啟用 `AutoTuner` 以尋找適用的XCMS參數
   - `parSet` [`array{numeric}`]: `AutoTuner` 所需的參數，可配置多組。程式將以所有組中各參數的中位數 (median) 作為最終使用的參數。如參數檔內未包含此參數，且 `autotuner` 為 `TRUE` 時，程式將使用預設參數。
-- `XCMS`: xcms 相關的參數，請參考 xcms 原始文章 [1, 2] 以及其 bioconductor 頁面。
+- `XCMS`: xcms 相關的參數，請參考 xcms 原始文章 [[1](https://doi.org/10.1021/ac051437y), [2](https://doi.org/10.1186/1471-2105-9-504)] 以及其 bioconductor 頁面。
 
 #### 2.1.3 名稱映射表（Mapping table）
 
@@ -106,7 +106,7 @@
 - `--unlock` [bool]: 解除緩存（cache）的鎖定狀態。在流程意外結束時，緩存會被鎖定，需要設定為 TRUE 來解鎖。
 - `--help`: 顯示說明檔。
 
-#### 2.3.2
+#### 2.3.2 示範
 
 ```{bash}
 docker run -d --rm -c 30 \
@@ -126,6 +126,6 @@ docker run -d --rm -c 30 \
 ## 參考文獻
 
 1. Smith, C.A., Want, E.J., O'Maille, G., Abagyan,R., Siuzdak, G. (2006). "XCMS: processing mass spectrometry data for metabolite profiling using nonlinear peak alignment, matching, and identification." Analytical Chemistry. (DOI: <https://doi.org/10.1021/ac051437y>)
-2. Tautenhahn R, Boettcher C, Neumann S (2008). “Highly sensitive feature detection for high resolution LC/MS.” BMC Bioinformatics.
+2. Tautenhahn R, Boettcher C, Neumann S (2008). “Highly sensitive feature detection for high resolution LC/MS.” BMC Bioinformatics. (DOI: <https://doi.org/10.1186/1471-2105-9-504>)
 3. Craig McLean and Elizabeth B. Kujawinski (2020). “AutoTuner: High Fidelity and Robust Parameter Selection for Metabolomics Data Processing.” Analytical Chemistry. (DOI: <https://doi.org/10.1021/acs.analchem.9b04804>)
 4. Landau WM (2018). “The drake R package: a pipeline toolkit for reproducibility and high-performance computing.” Journal of Open Source Software (DOI: <https://doi.org/10.1186/1471-2105-9-504>)
